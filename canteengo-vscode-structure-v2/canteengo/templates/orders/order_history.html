@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}My Order History & Feedback | CanteenGo{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-extrabold mb-6">📜 My Order History & Digital Tokens</h1>
+
+<div class="space-y-4">
+    {% for order in orders %}
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-4">
+            <div>
+                <div class="flex items-center space-x-3">
+                    <span class="text-xl font-black text-indigo-700">{{ order.token_number }}</span>
+                    <span class="text-xs font-bold px-2.5 py-1 rounded-full
+                        {% if order.status == 'READY' %}bg-emerald-100 text-emerald-800
+                        {% elif order.status == 'COMPLETED' %}bg-slate-100 text-slate-700
+                        {% else %}bg-amber-100 text-amber-800{% endif %}">
+                        {{ order.get_status_display }}
+                    </span>
+                </div>
+                <p class="text-xs text-slate-500 mt-1">
+                    Pickup Slot: <strong>{{ order.slot.start_time|time:"h:i A" }} - {{ order.slot.end_time|time:"h:i A" }}</strong> •
+                    Ordered: {{ order.created_at|date:"d M Y, h:i A" }}
+                </p>
+                <p class="text-xs text-slate-600 mt-1 font-medium">
+                    {% for i in order.items.all %}{{ i.quantity }}x {{ i.item.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                </p>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <span class="font-extrabold text-lg">₹{{ order.total_amount }}</span>
+                <a href="{% url 'token_view' order.id %}" class="bg-indigo-600 text-white text-xs font-bold px-3.5 py-2 rounded-xl hover:bg-indigo-700">
+                    View QR Token
+                </a>
+                <a href="{% url 'submit_feedback' order.id %}" class="border border-amber-400 bg-amber-50 text-amber-800 text-xs font-bold px-3 py-2 rounded-xl hover:bg-amber-100">
+                    {% if order.feedback %}★ {{ order.feedback.rating }}/5{% else %}Rate Meal{% endif %}
+                </a>
+            </div>
+        </div>
+    {% empty %}
+        <div class="bg-white p-10 rounded-2xl border text-center text-slate-500">
+            You haven't placed any pre-orders yet.
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

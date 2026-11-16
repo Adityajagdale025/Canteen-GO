@@ -1,0 +1,75 @@
+<!-- Online payment checkout template -->
+{% extends 'base.html' %}
+{% block title %}Checkout & Slot Booking | CanteenGo{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-6">
+    <div class="md:col-span-3 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <h2 class="text-xl font-extrabold mb-4">1. Reserve Pickup Time Slot</h2>
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <div>
+                <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Available Break Slots (Capped Capacity)</label>
+                <select name="slot_id" required class="w-full border border-slate-300 rounded-xl p-3 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    {% for slot in slots %}
+                        <option value="{{ slot.id }}" {% if not slot.is_available %}disabled{% endif %}>
+                            {{ slot.start_time|time:"h:i A" }} - {{ slot.end_time|time:"h:i A" }}
+                            {% if slot.is_available %}
+                                ({{ slot.spots_left }} of {{ slot.max_capacity }} spots open)
+                            {% else %}
+                                — SLOT FULL
+                            {% endif %}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <h2 class="text-xl font-extrabold mb-3">2. Select Digital Payment Mode</h2>
+                <div class="space-y-3">
+                    <label class="flex items-center justify-between p-3.5 border rounded-xl cursor-pointer hover:bg-indigo-50/40 transition">
+                        <div class="flex items-center space-x-3">
+                            <input type="radio" name="payment_method" value="WALLET" checked class="text-indigo-600 focus:ring-indigo-500">
+                            <div>
+                                <p class="font-bold text-sm">Campus Wallet (Instant 1-Tap)</p>
+                                <p class="text-xs text-slate-500">Available Balance: ₹{{ user.wallet_balance }}</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold bg-indigo-100 text-indigo-700 px-2.5 py-1 rounded">Fastest</span>
+                    </label>
+
+                    <label class="flex items-center justify-between p-3.5 border rounded-xl cursor-pointer hover:bg-indigo-50/40 transition">
+                        <div class="flex items-center space-x-3">
+                            <input type="radio" name="payment_method" value="UPI" class="text-indigo-600 focus:ring-indigo-500">
+                            <div>
+                                <p class="font-bold text-sm">UPI / Campus QR Pay</p>
+                                <p class="text-xs text-slate-500">Google Pay, PhonePe, Paytm</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded">Zero Fee</span>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-emerald-600 text-white py-3.5 rounded-xl font-extrabold text-base hover:bg-emerald-700 shadow-md transition">
+                Pay ₹{{ total }} & Generate Digital QR Token
+            </button>
+        </form>
+    </div>
+
+    <div class="md:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 h-fit">
+        <h3 class="font-extrabold text-lg mb-3">Order Summary</h3>
+        <ul class="divide-y text-sm mb-4">
+            {% for entry in cart_items %}
+                <li class="py-2 flex justify-between">
+                    <span>{{ entry.qty }}x {{ entry.item.name }}</span>
+                    <span class="font-bold">₹{{ entry.subtotal }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="border-t pt-3 flex justify-between items-center text-lg font-black">
+            <span>Total</span>
+            <span class="text-indigo-700">₹{{ total }}</span>
+        </div>
+    </div>
+</div>
+{% endblock %}

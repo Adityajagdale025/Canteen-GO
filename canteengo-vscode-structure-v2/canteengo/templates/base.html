@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CanteenGo | MIT-ADT Campus Cafe{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafaf9; }
+    </style>
+</head>
+<body class="text-stone-800 flex flex-col min-h-screen selection:bg-amber-200">
+    <!-- Navbar -->
+    <header class="bg-white/90 backdrop-blur-md border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-3.5 flex justify-between items-center">
+            <a href="{% url 'live_menu' %}" class="flex items-center space-x-3 group">
+                <div class="w-11 h-11 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-xl shadow-sm group-hover:scale-105 transition">
+                    ☕
+                </div>
+                <div>
+                    <span class="text-base font-extrabold tracking-tight text-stone-900 block leading-none">CanteenGo</span>
+                    <span class="text-[11px] font-semibold text-amber-700 tracking-wider">MIT-ADT Canteen</span>
+                </div>
+            </a>
+
+            <div class="flex items-center space-x-2 sm:space-x-4 text-sm font-semibold">
+                <a href="{% url 'live_menu' %}" class="px-3 py-2 rounded-xl hover:bg-stone-100 text-stone-600 transition">Menu</a>
+                <a href="{% url 'cart' %}" class="relative px-3 py-2 rounded-xl hover:bg-stone-100 text-stone-600 transition flex items-center space-x-1.5">
+                    <span>My Tray</span>
+                    {% if cart_item_count %}
+                        <span class="bg-amber-500 text-white text-[11px] font-black px-2 py-0.5 rounded-full shadow-xs">{{ cart_item_count }}</span>
+                    {% endif %}
+                </a>
+
+                {% if user.is_authenticated %}
+                    <a href="{% url 'order_history' %}" class="px-3 py-2 rounded-xl hover:bg-stone-100 text-stone-600 transition">My Tokens</a>
+
+                    {% if user.is_canteen_staff %}
+                        <a href="{% url 'kitchen_dashboard' %}" class="bg-amber-200 text-amber-900 px-3 py-1.5 rounded-xl font-bold hover:bg-amber-300 transition text-xs">
+                            👨‍🍳 Kitchen
+                        </a>
+                        <a href="{% url 'scan_token' %}" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl font-bold hover:bg-emerald-700 transition text-xs">
+                            📷 Scan QR
+                        </a>
+                    {% endif %}
+
+                    <form action="{% url 'topup_wallet' %}" method="post" class="inline-flex items-center bg-stone-100 rounded-xl px-3 py-1.5 text-xs border border-stone-200">
+                        {% csrf_token %}
+                        <input type="hidden" name="amount" value="100">
+                        <span class="mr-2 font-bold text-stone-700">₹{{ user.wallet_balance }}</span>
+                        <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-white px-2 py-1 rounded-lg font-black text-[10px]">＋₹100</button>
+                    </form>
+
+                    <form action="{% url 'logout' %}" method="post" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="text-rose-600 hover:bg-rose-50 px-2.5 py-1.5 rounded-xl text-xs font-bold transition">
+                            Logout
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'student_login' %}" class="px-3 py-2 text-stone-600 hover:text-stone-900">Login</a>
+                    <a href="{% url 'register' %}" class="bg-stone-900 text-white px-4 py-2 rounded-xl font-bold hover:bg-stone-800 transition shadow-sm">
+                        Sign Up
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 py-8 flex-1 w-full">
+        {% if messages %}
+            <div class="space-y-2 mb-6">
+                {% for message in messages %}
+                    <div class="p-4 rounded-2xl text-sm font-semibold flex items-center justify-between border shadow-2xs
+                        {% if message.tags == 'error' %}bg-rose-50 border-rose-200 text-rose-800
+                        {% elif message.tags == 'info' %}bg-sky-50 border-sky-200 text-sky-800
+                        {% else %}bg-emerald-50 border-emerald-200 text-emerald-800{% endif %}">
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-stone-200 text-center py-8 text-xs text-stone-500 mt-16">
+        <p class="font-bold text-stone-700">CanteenGo — Built with care for college snack breaks</p>
+        <p class="mt-1 text-stone-400">MIT School of Computing (CSE) • Team InnoveBytes</p>
+    </footer>
+    <script src="{% static 'js/cart.js' %}"></script>
+</body>
+</html>

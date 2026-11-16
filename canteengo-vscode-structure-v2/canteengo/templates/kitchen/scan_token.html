@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Counter QR Token Scanner | CanteenGo{% endblock %}
+{% block content %}
+<div class="max-w-lg mx-auto bg-white p-6 rounded-2xl shadow-md border text-center">
+    <h1 class="text-2xl font-extrabold mb-1">📷 Counter QR Token Pickup</h1>
+    <p class="text-xs text-slate-500 mb-4">Scan student's QR code or enter token number manually to release order</p>
+
+    <div id="reader" class="w-full rounded-xl overflow-hidden border mb-4"></div>
+
+    <div id="scan-result" class="p-4 bg-slate-100 rounded-xl text-sm font-semibold text-slate-700 mb-6">
+        Ready to scan QR token...
+    </div>
+
+    <div class="border-t pt-4 text-left">
+        <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Or Verify Token Number Manually</label>
+        <div class="flex gap-2">
+            <input type="text" id="manual-token" placeholder="e.g., CG-001" class="border rounded-xl px-3.5 py-2 text-sm flex-1 font-bold uppercase">
+            <button onclick="verifyManualToken()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-indigo-700">
+                Verify & Release
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="{% static 'js/qr_scanner.js' %}"></script>
+{% endblock %}

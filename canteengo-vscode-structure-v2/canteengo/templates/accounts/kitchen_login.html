@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Kitchen Staff Login | CanteenGo{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-8 rounded-3xl shadow-xs border border-stone-200 mt-6">
+    <div class="text-center mb-6">
+        <span class="text-3xl">👨‍🍳</span>
+        <h2 class="text-2xl font-black text-stone-900 mt-2">Kitchen & Counter Portal</h2>
+        <p class="text-xs text-stone-500 mt-1">Staff login to manage incoming live orders and scan tokens</p>
+    </div>
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div>
+            <label class="block text-xs font-bold uppercase text-stone-600 mb-1">Staff Username</label>
+            <input type="text" name="username" required autofocus class="w-full border border-stone-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+        </div>
+        <div>
+            <label class="block text-xs font-bold uppercase text-stone-600 mb-1">Password</label>
+            <input type="password" name="password" required class="w-full border border-stone-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+        </div>
+        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-stone-900 py-3 rounded-2xl font-extrabold text-sm shadow-xs transition">
+            Sign In to Kitchen Dashboard
+        </button>
+    </form>
+
+    <div class="mt-5 p-3.5 bg-amber-50/60 rounded-2xl border border-amber-200 text-xs text-amber-900">
+        <p class="font-bold">Demo Staff Login:</p>
+        <p>Username: <code>staff</code> | Password: <code>password123</code></p>
+    </div>
+
+    <div class="mt-6 pt-5 border-t border-stone-100 flex justify-between items-center text-xs">
+        <span class="text-stone-500">Are you a student?</span>
+        <a href="{% url 'student_login' %}" class="font-bold text-stone-900 hover:underline">← Go to Student Login</a>
+    </div>
+</div>
+{% endblock %}

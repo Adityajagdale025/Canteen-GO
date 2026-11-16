@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Digital Token {{ order.token_number }} | CanteenGo{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-6 rounded-3xl shadow-xl text-center border-t-8 border-indigo-600">
+    <div class="inline-block bg-indigo-50 text-indigo-700 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+        Smart Canteen Digital Pickup Token
+    </div>
+
+    <h1 class="text-5xl font-black text-indigo-700 my-3 tracking-tight">{{ order.token_number }}</h1>
+
+    <div class="mb-4">
+        {% if order.status == 'PLACED' %}
+            <span class="bg-sky-100 text-sky-800 text-xs font-bold px-3 py-1 rounded-full">🕒 Order Placed — Sent to Kitchen</span>
+        {% elif order.status == 'PREPARING' %}
+            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">🍳 Chef is Preparing Your Meal</span>
+        {% elif order.status == 'READY' %}
+            <span class="bg-emerald-100 text-emerald-800 text-sm font-extrabold px-4 py-1.5 rounded-full animate-pulse">✅ READY FOR PICKUP AT COUNTER!</span>
+        {% elif order.status == 'COMPLETED' %}
+            <span class="bg-slate-200 text-slate-700 text-xs font-bold px-3 py-1 rounded-full">🎉 Order Collected</span>
+        {% endif %}
+    </div>
+
+    <div class="bg-slate-50 rounded-xl p-3 text-xs text-slate-600 mb-4 border">
+        <p><strong>Reserved Pickup Slot:</strong> {{ order.slot.start_time|time:"h:i A" }} - {{ order.slot.end_time|time:"h:i A" }}</p>
+        <p class="mt-0.5"><strong>Student:</strong> {{ order.user.username }} ({{ order.user.roll_number|default:"MIT-ADT" }})</p>
+    </div>
+
+    {% if order.qr_code %}
+        <div class="flex justify-center my-4">
+            <img src="{{ order.qr_code.url }}" alt="QR Token" class="w-52 h-52 border-2 border-slate-200 p-2 rounded-2xl bg-white shadow-sm">
+        </div>
+        <p class="text-[11px] text-slate-400 mb-4">Show this QR code to the counter staff to release your tray.</p>
+    {% endif %}
+
+    <div class="bg-slate-50 rounded-xl p-4 text-left text-sm mb-4 border">
+        <p class="font-bold text-slate-700 mb-2">Items in Tray:</p>
+        <ul class="space-y-1 text-xs text-slate-600">
+            {% for item in order.items.all %}
+                <li class="flex justify-between">
+                    <span>{{ item.quantity }}x {{ item.item.name }}</span>
+                    <span class="font-semibold">₹{{ item.subtotal }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="border-t mt-2 pt-2 flex justify-between font-bold text-slate-800">
+            <span>Paid via {{ order.get_payment_method_display }}</span>
+            <span>₹{{ order.total_amount }}</span>
+        </div>
+    </div>
+
+    <div class="flex gap-2 justify-center">
+        <button onclick="window.location.reload();" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-4 py-2 rounded-xl">
+            🔄 Refresh Live Status
+        </button>
+        {% if order.status == 'COMPLETED' %}
+            <a href="{% url 'submit_feedback' order.id %}" class="bg-amber-400 hover:bg-amber-300 text-slate-900 text-xs font-bold px-4 py-2 rounded-xl">
+                ⭐ Rate Meal
+            </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

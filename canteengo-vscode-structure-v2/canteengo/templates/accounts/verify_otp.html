@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Verify OTP | CanteenGo{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-md border text-center">
+    <span class="text-4xl">📲</span>
+    <h2 class="text-2xl font-extrabold mt-2 mb-1">OTP Verification</h2>
+    <p class="text-xs text-slate-500 mb-6">Enter the 4-digit OTP sent to your registered phone</p>
+
+    {% if demo_otp %}
+        <div class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900">
+            Simulated SMS OTP Code: <strong class="text-base font-black tracking-widest">{{ demo_otp }}</strong>
+        </div>
+    {% endif %}
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <input type="text" name="otp" maxlength="4" placeholder="Enter 4-digit OTP" required
+               class="w-full text-center text-2xl tracking-widest font-bold border rounded-xl py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <button type="submit" class="w-full bg-emerald-600 text-white py-2.5 rounded-xl font-bold hover:bg-emerald-700 transition">
+            Verify & Continue to Menu
+        </button>
+    </form>
+</div>
+{% endblock %}

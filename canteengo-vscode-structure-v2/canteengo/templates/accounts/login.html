@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Login | CanteenGo{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-md border border-slate-100 mt-6">
+    <div class="text-center mb-6">
+        <span class="text-4xl">🔐</span>
+        <h2 class="text-2xl font-extrabold text-slate-800 mt-2">Welcome Back</h2>
+        <p class="text-xs text-slate-500 mt-1">Login with your Student or Canteen Staff credentials</p>
+    </div>
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div>
+            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Username</label>
+            <input type="text" name="username" required autofocus class="w-full border border-slate-300 rounded-lg px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Password</label>
+            <input type="password" name="password" required class="w-full border border-slate-300 rounded-lg px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <button type="submit" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl hover:bg-indigo-700 font-bold shadow transition">
+            Sign In to CanteenGo
+        </button>
+    </form>
+
+    <div class="mt-6 p-3.5 bg-slate-50 rounded-xl border text-xs text-slate-600 space-y-1">
+        <p class="font-bold text-slate-700">Quick Demo Accounts:</p>
+        <p>• <strong>Student:</strong> username <code>student</code> / password <code>password123</code></p>
+        <p>• <strong>Kitchen Staff:</strong> username <code>staff</code> / password <code>password123</code></p>
+    </div>
+
+    <p class="text-center text-sm text-slate-500 mt-5">
+        New student? <a href="{% url 'register' %}" class="text-indigo-600 font-bold hover:underline">Create an account</a>
+    </p>
+</div>
+{% endblock %}

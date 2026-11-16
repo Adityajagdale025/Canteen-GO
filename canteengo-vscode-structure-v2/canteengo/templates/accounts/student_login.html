@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Student Login | CanteenGo{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-8 rounded-3xl shadow-xs border border-stone-200 mt-6">
+    <div class="text-center mb-6">
+        <span class="text-3xl">🎓</span>
+        <h2 class="text-2xl font-black text-stone-900 mt-2">Student Portal</h2>
+        <p class="text-xs text-stone-500 mt-1">Log in to pre-order meals and book your break slots</p>
+    </div>
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div>
+            <label class="block text-xs font-bold uppercase text-stone-600 mb-1">Username / Roll No</label>
+            <input type="text" name="username" required autofocus class="w-full border border-stone-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+        </div>
+        <div>
+            <label class="block text-xs font-bold uppercase text-stone-600 mb-1">Password</label>
+            <input type="password" name="password" required class="w-full border border-stone-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+        </div>
+        <button type="submit" class="w-full bg-stone-900 hover:bg-stone-800 text-white py-3 rounded-2xl font-bold text-sm shadow-xs transition">
+            Sign In as Student
+        </button>
+    </form>
+
+    <div class="mt-5 p-3.5 bg-stone-50 rounded-2xl border text-xs text-stone-600">
+        <p class="font-bold text-stone-700">Demo Student Login:</p>
+        <p>Username: <code>student</code> | Password: <code>password123</code></p>
+    </div>
+
+    <div class="mt-6 pt-5 border-t border-stone-100 flex justify-between items-center text-xs">
+        <span class="text-stone-500">Are you canteen staff?</span>
+        <a href="{% url 'kitchen_login' %}" class="font-bold text-amber-700 hover:underline">Go to Kitchen Login →</a>
+    </div>
+</div>
+{% endblock %}

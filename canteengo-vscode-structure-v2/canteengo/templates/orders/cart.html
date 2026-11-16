@@ -1,0 +1,52 @@
+<!-- Cart & slot booking template -->
+{% extends 'base.html' %}
+{% block title %}Your Tray & Slot Selection | CanteenGo{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <h1 class="text-2xl font-extrabold mb-6">🛒 Your Pre-Order Tray</h1>
+
+    {% if cart_items %}
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+            <ul class="divide-y divide-slate-100">
+                {% for entry in cart_items %}
+                    <li class="p-4 flex flex-wrap justify-between items-center gap-4">
+                        <div>
+                            <h3 class="font-bold text-slate-800">{{ entry.item.name }}</h3>
+                            <p class="text-xs text-slate-500">₹{{ entry.item.price }} per unit • Stock available: {{ entry.item.stock_quantity }}</p>
+                        </div>
+
+                        <div class="flex items-center space-x-3">
+                            <a href="{% url 'update_cart_item' entry.item.id 'dec' %}" class="w-8 h-8 rounded-lg border flex items-center justify-center font-bold hover:bg-slate-100">-</a>
+                            <span class="font-bold text-sm w-6 text-center">{{ entry.qty }}</span>
+                            <a href="{% url 'update_cart_item' entry.item.id 'inc' %}" class="w-8 h-8 rounded-lg border flex items-center justify-center font-bold hover:bg-slate-100">+</a>
+                            <span class="font-extrabold text-slate-900 w-20 text-right">₹{{ entry.subtotal }}</span>
+                            <a href="{% url 'update_cart_item' entry.item.id 'remove' %}" class="text-rose-500 text-xs hover:underline ml-2">Remove</a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <div class="bg-slate-50 p-4 flex justify-between items-center border-t">
+                <span class="font-bold text-slate-600">Total Payable Amount</span>
+                <span class="text-2xl font-black text-indigo-700">₹{{ total }}</span>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center">
+            <a href="{% url 'live_menu' %}" class="text-sm font-bold text-slate-600 hover:underline">← Add More Items</a>
+            <a href="{% url 'checkout' %}" class="bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-indigo-700 shadow transition">
+                Proceed to Slot Booking & Payment →
+            </a>
+        </div>
+    {% else %}
+        <div class="bg-white rounded-2xl border p-12 text-center">
+            <span class="text-5xl">🍽️</span>
+            <h3 class="text-lg font-bold mt-3">Your tray is currently empty</h3>
+            <p class="text-xs text-slate-500 mt-1 mb-5">Browse live inventory and add your favorite meals before your break starts.</p>
+            <a href="{% url 'live_menu' %}" class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-700">
+                Browse Live Menu
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
